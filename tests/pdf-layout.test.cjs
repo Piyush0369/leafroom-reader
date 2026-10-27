@@ -1,0 +1,35 @@
+const assert = require('node:assert/strict');
+const {pages,anchor,position,validMode,inspect,pageRatio} = require('../pdf-layout.js');
+const sources=[{sourcePage:1,width:700,height:480},{sourcePage:2,width:350,height:480},{sourcePage:3,width:700,height:480}];
+const auto=pages(sources);
+assert.deepEqual(auto,[{sourcePage:1,half:0},{sourcePage:1,half:1},{sourcePage:2,half:null},{sourcePage:3,half:0},{sourcePage:3,half:1}]);
+const original=pages(sources,'single');
+assert.equal(original.length,3);
+assert.equal(pages(sources,'split').length,6);
+assert.equal(validMode('invalid'),'auto');
+assert.equal(pageRatio([{width:450,height:700}]),450/700,'Match narrow PDF pages instead of adding cream side strips');
+assert.equal(pageRatio([{width:900,height:700}]),450/700,'Split spreads use the ratio of each half');
+assert.equal(pageRatio([{width:900,height:700}],'single'),900/700);
+assert.equal(pageRatio([{width:450,height:700}],'split'),225/700);
+assert.equal(pageRatio([{width:900,height:700},{width:450,height:700},{width:450,height:700}],'single'),450/700,'Mixed sizes keep the dominant page shape throughout flips');
+assert.equal(pageRatio([{width:0,height:700},{width:450,height:0}]),350/480);
+assert.equal(pageRatio(),350/480);
+assert.deepEqual(anchor(auto,0,3),{edge:'cover'});
+assert.deepEqual(anchor(auto,3,3),{edge:'end'});
+assert.deepEqual(anchor(auto,2,3),{sourcePage:2,half:null});
+assert.equal(position(original,anchor(auto,2,3),2),1);
+assert.equal(position(auto,{sourcePage:3,half:null},3),2);
+assert.equal(position(auto,{edge:'end'},3),3);
+assert.equal(position(auto,{sourcePage:99,half:0},3),null);
+(async()=>{
+ const fake={numPages:11,async getPage(sourcePage){return {getViewport(){return {width:sourcePage===2?350:700,height:480};}};}};
+ const sizes=await inspect(fake);
+ assert.equal(sizes.length,11);assert.equal(sizes[10].sourcePage,11);assert.equal(sizes[1].width,350);
+ console.log('PDF layout checks passed: mixed pages, modes, anchors, inspection order.');
+})().catch(error=>{console.error(error);process.exitCode=1;});
+// Single-page positions count individual logical pages, including spread halves.
+assert.deepEqual(anchor(auto,2,6,true),{sourcePage:1,half:1});
+assert.equal(position(auto,{sourcePage:1,half:1},6,true),2);
+assert.equal(position(auto,{sourcePage:3,half:0},6,true),4);
+assert.equal(position(auto,anchor(auto,4,6,true),3,false),2);
+assert.equal(position(auto,{edge:'end'},6,true),6);

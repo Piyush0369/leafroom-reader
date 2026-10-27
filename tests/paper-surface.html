@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><meta charset="UTF-8"><title>Continuous page surface test</title><style>body{margin:0}#test-controls{padding:16px;display:flex;gap:12px;align-items:center;justify-content:center;font:14px Arial}#test-controls input{width:240px}.scene{height:620px!important}.book-camera{zoom:1!important}.book{transition:none!important}.page canvas{width:100%;height:100%}.test-page{padding:0!important}.test-note{text-align:center;font:12px Arial;color:#54634e}</style>
+<div id="test-controls"><label>Turn progress <input type="range" id="progress-test" min="0" max="1" step=".01" value=".4"></label><output id="value">40%</output><label>Grip <select id="grip-test"><option value="auto">Automatic</option><option value="top">Top corner</option><option value="bottom">Bottom corner</option></select></label><label>Vertical pull <input type="range" id="lift-test" min="-.3" max=".3" step=".01" value="-.12"></label><label>Direction <select id="direction-test"><option value="1">Forward</option><option value="-1">Backward</option></select></label><label><input type="checkbox" id="peek-test"> Corner preview</label><label>Release speed <select id="speed-test"><option value="0">Gentle</option><option value="3">Fast flick</option></select></label><button id="finish">Complete turn</button></div><p class="test-note" id="test-status">Preparing continuous paper surface…</p><div class="scene"><div class="book-camera"><div class="book open" id="test-book"><div class="leaf" id="test-leaf"><div class="face front page test-page"><canvas width="700" height="960"></canvas></div><div class="face back page test-page"><canvas width="700" height="960"></canvas></div></div></div></div></div>
+<script src="/paper-dynamics.js?v=paper-arc-13"></script><script src="/paper-surface.js?v=paper-arc-13"></script><script src="/paper-turn.js?v=paper-arc-13"></script><script>
+(async()=>{
+ const html=await (await fetch('/index.html')).text(),parsed=new DOMParser().parseFromString(html,'text/html');
+ const style=document.createElement('style');style.textContent=parsed.querySelector('style').textContent;document.head.prepend(style);
+ const canvases=document.querySelectorAll('.test-page canvas');
+ canvases.forEach((canvas,i)=>{const ctx=canvas.getContext('2d');ctx.fillStyle=i?'#e1e9f4':'#fff9e9';ctx.fillRect(0,0,700,960);ctx.fillStyle=i?'#6a7694':'#71896b';ctx.fillRect(30,240,640,520);ctx.fillStyle='#25382d';ctx.font='38px Georgia';ctx.fillText(i?'BACK — right way round':'FRONT — smooth paper',35,85);ctx.font='23px Georgia';ctx.fillText('One texture, shared vertices, no strip edges.',35,140);ctx.fillStyle='#fff';ctx.font='30px Georgia';for(let y=310;y<730;y+=90)ctx.fillText('Continuous color across the entire page',45,y);});
+ const leaf=document.querySelector('#test-leaf');
+ const turn=await PaperTurn.create({book:document.querySelector('#test-book'),front:leaf.children[0],back:leaf.children[1],hidden:leaf,delta:1,single:false});turn.mount();turn.seek(.4);
+ document.querySelector('#test-status').textContent='WebGL mesh ready: one surface canvas, no CSS strips.';
+ const render=()=>{
+  const value=Number(document.querySelector('#progress-test').value),corner=document.querySelector('#grip-test').value,lift=Number(document.querySelector('#lift-test').value),delta=Number(document.querySelector('#direction-test').value);
+  turn.stopAnimation();turn.options.delta=delta;
+  const progress=delta>0?value:1-value;
+  if(document.querySelector('#peek-test').checked){const peek=PaperDynamics.peek({delta,u:.98,v:corner==='bottom'?.98:.02});turn.grip=peek.grip;turn.seek(peek.progress);}
+  else if(corner==='auto'){turn.options.cornerV=1;turn.grip=null;turn.seek(progress);}
+  else{const v=corner==='top'?.02:.98;turn.follow(progress,{u:.98,v,strength:1,targetX:delta*.98*Math.cos(value*Math.PI),targetY:v+lift});}
+  document.querySelector('#value').textContent=Math.round(value*100)+'%';
+ };
+ for(const id of ['progress-test','lift-test'])document.querySelector('#'+id).oninput=render;
+ for(const id of ['grip-test','direction-test','peek-test'])document.querySelector('#'+id).onchange=render;
+ document.querySelector('#finish').onclick=async()=>{const began=performance.now();turn.setMomentum(turn.options.delta*Number(document.querySelector('#speed-test').value));await turn.animate(turn.options.delta>0?1:0);turn.destroy();document.querySelector('#test-status').textContent=`Turn completed in ${Math.round(performance.now()-began)} ms; temporary surface and GPU resources released.`;};
+})().catch(error=>document.querySelector('#test-status').textContent='FAILED: '+error.message);
+</script></html>

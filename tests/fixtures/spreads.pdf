@@ -1,0 +1,53 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 6 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 700 480] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 348 >>
+stream
+0.90 0.94 0.89 rg 20 20 310 440 re f
+0.91 0.92 0.96 rg 370 20 310 440 re f
+0 0 0 rg BT /F1 22 Tf 40 410 Td (Printed page 1) Tj 0 -42 Td /F1 12 Tf (Left half of source spread) Tj ET
+BT /F1 22 Tf 390 410 Td (Printed page 2) Tj 0 -42 Td /F1 12 Tf (Right half of source spread) Tj ET
+0.3 0.5 0.4 rg 40 70 270 240 re f
+0.4 0.4 0.6 rg 390 70 270 240 re f
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 700 480] /Resources << /Font << /F1 4 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 348 >>
+stream
+0.90 0.94 0.89 rg 20 20 310 440 re f
+0.91 0.92 0.96 rg 370 20 310 440 re f
+0 0 0 rg BT /F1 22 Tf 40 410 Td (Printed page 3) Tj 0 -42 Td /F1 12 Tf (Left half of source spread) Tj ET
+BT /F1 22 Tf 390 410 Td (Printed page 4) Tj 0 -42 Td /F1 12 Tf (Right half of source spread) Tj ET
+0.3 0.5 0.4 rg 40 70 270 240 re f
+0.4 0.4 0.6 rg 390 70 270 240 re f
+endstream
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000121 00000 n 
+0000000247 00000 n 
+0000000317 00000 n 
+0000000716 00000 n 
+0000000842 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R >>
+startxref
+1241
+%%EOF

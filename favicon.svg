@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>Leafroom</title>
+  <rect width="64" height="64" rx="14" fill="#435d43"/>
+  <path d="M32 25C27 18 32 11 44 10c0 10-5 16-12 15Z" fill="#c5d2a9"/>
+  <path d="M12 23c8-3 14-2 20 3 6-5 12-6 20-3v26c-8-3-14-2-20 3-6-5-12-6-20-3Z" fill="#fcf8ed"/>
+  <path d="M32 27v22" fill="none" stroke="#435d43" stroke-width="3" stroke-linecap="round"/>
+</svg>

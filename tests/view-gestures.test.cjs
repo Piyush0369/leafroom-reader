@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict');
+const {measure,pinch,clampZoom}=require('../view-gestures.js');
+assert.deepEqual(measure([{x:0,y:0},{x:100,y:0}]),{distance:100,x:50,y:0});
+assert.equal(measure([{x:5,y:5},{x:5,y:5}]).distance,1);
+const start={distance:100,x:50,y:20,zoom:1,pan:{x:0,y:0}};
+assert.deepEqual(pinch(start,{distance:200,x:50,y:20}),{zoom:2,pan:{x:-50,y:-20}});
+assert.deepEqual(pinch(start,{distance:100,x:80,y:40}),{zoom:1,pan:{x:30,y:20}});
+assert.equal(pinch(start,{distance:600,x:50,y:20}).zoom,3);
+assert.equal(pinch(start,{distance:10,x:50,y:20}).zoom,1);
+assert.equal(clampZoom(.5),1);assert.equal(clampZoom(4),3);
+console.log('Pinch checks passed: midpoint, focal anchoring, translation, zoom limits.');
